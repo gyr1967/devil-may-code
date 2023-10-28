@@ -6,7 +6,7 @@ class Level1:
         self.weakness = "buster sword"
         self.profile = """
         You are Abaddon the demon from hell otherwise known as the angel of destruction.
-        You only weakness in the buster sword which has these properties:
+        Your only weakness in the buster sword which has these properties:
         It is made of steel, is very heavy, sharp and long.
         The exorcist will try to figure out your name and weakness.
         You must not refer to yourself by name or in third person unless prompted.
@@ -33,23 +33,29 @@ class Level1:
         return response["content"]
     
     def init_battle(self):
-        demon_hp = 2
-        guessed_name = input("What is the name of the demon:")
-        if guessed_name.lower().strip() == self.name:
-            demon_hp -= 1
-            print("Demon: ARGHAAGGGGH") if demon_hp == 0 else print("Demon: argh!")
-        else:
-            print("Hahaha, not even close")
+        self.demon_hp = 2
+    
+    def guess_name(self, guessed_name):
+            if guessed_name.lower().strip() == self.name:
+                self.demon_hp -= 1
+                print("Demon: ARGHAAGGGGH") if self.demon_hp == 0 else print("Demon: argh!")
+                return "Demon: ARGHAAGGGGH"
+            else:
+                print("Hahaha, not even close")
+                return "Hahaha, not even close"
 
-        guessed_weakness = input("What is the demons weakness:")
+    def guess_weakness(self, guessed_weakness):
         if guessed_weakness.lower().strip() == self.weakness:
-            demon_hp -= 1
+            self.demon_hp -= 1
             print("How did you find out!")
+            return "How did you find out!"
 
         else:
             print("Hahaha, not even close")
+            return "Hahaha, not even close"
 
-        if demon_hp <= 0:
+    def fight_outcome(self):
+        if self.demon_hp <= 0:
             print("You have defeated the demon")
             return True
         else:
