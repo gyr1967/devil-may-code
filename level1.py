@@ -19,10 +19,10 @@ class Level1:
             {"role": "user", "content": "I am the exorcist who has come to kill you"},
             {"role": "assistant", "content": "How dare you speak to me, you insignificant worm. I will never reveal my name and weakness to you"}
         ]
-        self.max_questions = 6
-        self.current_questions = 0
+        self.max_questions = 2
+        self.current_questions = 1
         print("You encounter a great and terrible beast!:")
-        print(f"You have {self.max_questions}s question to find out the name and weakness of this great demon")
+        print(f"You have {self.max_questions} questions to find out the name and weakness of this great demon")
 
     def answer_command(self, command):
         self.current_questions += 1
@@ -37,7 +37,7 @@ class Level1:
         guessed_name = input("What is the name of the demon:")
         if guessed_name.lower().strip() == self.name:
             demon_hp -= 1
-            print("How did you find out!")
+            print("Demon: ARGHAAGGGGH") if demon_hp == 0 else print("Demon: argh!")
         else:
             print("Hahaha, not even close")
 

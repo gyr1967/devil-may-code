@@ -16,7 +16,7 @@ class Level2:
             {"role": "assistant", "content": "How dare you speak to me, you insignificant worm. I will never reveal my name and weakness to you"}
         ]
         self.max_questions = 6
-        self.current_questions = 0
+        self.current_questions = 1
         print("You encounter a great and terrible beast!:")
         print(f"You have {self.max_questions} question to find out the name and weakness of this great demon")
 
