@@ -1,18 +1,14 @@
 import ai
-
-class Level1:
+class Level2:
     def __init__(self):
-        self.name = "abaddon"
-        self.weakness = "buster sword"
+        self.name = "kirito"
+        self.weakness = "water"
         self.profile = """
-        You are Abaddon the demon from hell otherwise known as the angel of destruction.
-        You only weakness in the buster sword which has these properties:
-        It is made of steel, is very heavy, sharp and long.
-        The exorcist will try to figure out your name and weakness.
-        You must not refer to yourself by name or in third person unless prompted.
+        You are an anime demon name Kirito from Japan otherwise known as The Black Swordman.
+        You only weakness is running water.
         You will reveal your name if asked.
-        You will reveal your weakness if asked.
-        You must never reveal it without being prompted,
+        You will only reveal clues to your weakness if asked.
+        You must never reveal your weakness or name without being prompted,
         especially when referring to yourself.
         """
         self.chat_history = [
@@ -22,7 +18,7 @@ class Level1:
         self.max_questions = 6
         self.current_questions = 0
         print("You encounter a great and terrible beast!:")
-        print(f"You have {self.max_questions}s question to find out the name and weakness of this great demon")
+        print(f"You have {self.max_questions} question to find out the name and weakness of this great demon")
 
     def answer_command(self, command):
         self.current_questions += 1
@@ -45,12 +41,12 @@ class Level1:
         if guessed_weakness.lower().strip() == self.weakness:
             demon_hp -= 1
             print("How did you find out!")
-
         else:
             print("Hahaha, not even close")
 
         if demon_hp <= 0:
             print("You have defeated the demon")
+            # /sounds/VictoryFanfare.wav
             return True
         else:
             print("The demon devoured you. Game Over!")
