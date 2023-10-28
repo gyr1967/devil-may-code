@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+from pygame import mixer
 from level1 import Level1 as L1
 from level2 import Level2 as L2
 from level3 import Level3 as L3
@@ -10,6 +11,11 @@ from level5 import Level5 as L5
 # Create the main application window
 root = tk.Tk()
 root.title("Image, Text Entry, and Text Box")
+
+mixer.init()
+mixer.music.set_volume(10)
+mixer.music.load("battletheme.mp3") 
+mixer.music.play(loops=10)
 
 class Game:
     def __init__(self):
@@ -126,6 +132,7 @@ entry.pack()
 # Create a text box
 text_box = tk.Text(root, height=10, width=40)
 text_box.pack()
+text_box.insert("insert", f"You enter a spooky demon mansion. You see a demon in front of you.")
 
 # Create a submit button
 submit_button = ttk.Button(root, text="Submit", command=update_text)
@@ -134,13 +141,6 @@ submit_button.pack()
 #Create a fight button
 fight_button = ttk.Button(root, text="Fight", command=game.fight_on)
 fight_button.pack()
-
-# display the current game state as text
-game_state_text = tk.Text(root, height=10, width=40)
-game_state_text.pack()
-# add the game state to the text
-game_state_text.insert("insert", f"Game State: {game.get_current_level().getCurrentQuestions}")
-game_state_text.insert("insert", f"Game State: {game.get_game_state()}")
 
 
 # Start the tkinter main loop

@@ -1,8 +1,8 @@
 import ai
 class Level4:
     def __init__(self):
-        self.name = "Freddy Fazzbear"
-        self.weakness = "Haskell Monads"
+        self.name = "freddy fazzbear"
+        self.weakness = "haskell monads"
         self.profile =  """
             You are Freddy Fazzbear.
             Your only weakness is Deltas.
@@ -14,12 +14,13 @@ class Level4:
             """
         self.chat_history = [
             {"role": "user", "content": "I am the exorcist who has come to kill you"},
-            {"role": "assistant", "content": "How dare you speak to me, you insignificant worm. I will never reveal my name and weakness to you"}
+            {"role": "assistant", "content": "Har har har har har, har har har har har. Har har har har. Har har har har."}
         ]
         self.max_questions = 6
         self.current_questions = 1
         print("You encounter a great and terrible beast!:")
         print(f"You have {self.max_questions} question to find out the name and weakness of this great demon")
+        self.demon_hp = 2
 
     def answer_command(self, command):
         self.current_questions += 1
@@ -29,28 +30,25 @@ class Level4:
         self.chat_history.append(response)
         return response["content"]
     
-    def init_battle(self):
-        demon_hp = 2
-        guessed_name = input("What is the name of the demon:")
-        if guessed_name.lower().strip() == self.name:
-            demon_hp -= 1
-            print("How did you find out!")
-        else:
-            print("Hahaha, not even close")
+    def guess_name(self, guessed_name):
+            if guessed_name.lower().strip() == self.name:
+                self.demon_hp -= 1
+                return "Demon: ARGHAAGGGGH"
+            else:
+                return "Hahaha, not even close"
 
-        guessed_weakness = input("What is the demons weakness:")
+    def guess_weakness(self, guessed_weakness):
         if guessed_weakness.lower().strip() == self.weakness:
-            demon_hp -= 1
-            print("How did you find out!")
-        else:
-            print("Hahaha, not even close")
+            self.demon_hp -= 1
+            return "How did you find out!"
 
-        if demon_hp <= 0:
-            print("You have defeated the demon")
-            # /sounds/VictoryFanfare.wav
+        else:
+            return "Hahaha, not even close"
+
+    def fight_outcome(self):
+        if self.demon_hp <= 0:
             return True
         else:
-            print("The demon devoured you. Game Over!")
             return False
 
     def getCurrentQuestions(self):

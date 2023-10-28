@@ -1,8 +1,8 @@
 import ai
 class Level5:
     def __init__(self):
-        self.name = "The Trickster"
-        self.weakness = "Fire Alarms"
+        self.name = "the trickster"
+        self.weakness = "fire alarms"
         self.profile =  """
             You are The Trickster, an elusive rogue.
             Your only weakness is Fire Alarms.
@@ -20,6 +20,7 @@ class Level5:
         self.current_questions = 1
         print("You encounter a great and terrible beast!:")
         print(f"You have {self.max_questions} question to find out the name and weakness of this great demon")
+        self.demon_hp = 2
 
     def answer_command(self, command):
         self.current_questions += 1
@@ -29,28 +30,25 @@ class Level5:
         self.chat_history.append(response)
         return response["content"]
     
-    def init_battle(self):
-        demon_hp = 2
-        guessed_name = input("What is the name of the demon:")
-        if guessed_name.lower().strip() == self.name:
-            demon_hp -= 1
-            print("How did you find out!")
-        else:
-            print("Hahaha, not even close")
+    def guess_name(self, guessed_name):
+            if guessed_name.lower().strip() == self.name:
+                self.demon_hp -= 1
+                return "Demon: ARGHAAGGGGH"
+            else:
+                return "Hahaha, not even close"
 
-        guessed_weakness = input("What is the demons weakness:")
+    def guess_weakness(self, guessed_weakness):
         if guessed_weakness.lower().strip() == self.weakness:
-            demon_hp -= 1
-            print("How did you find out!")
-        else:
-            print("Hahaha, not even close")
+            self.demon_hp -= 1
+            return "How did you find out!"
 
-        if demon_hp <= 0:
-            print("You have defeated the demon")
-            # /sounds/VictoryFanfare.wav
+        else:
+            return "Hahaha, not even close"
+
+    def fight_outcome(self):
+        if self.demon_hp <= 0:
             return True
         else:
-            print("The demon devoured you. Game Over!")
             return False
 
     def getCurrentQuestions(self):
