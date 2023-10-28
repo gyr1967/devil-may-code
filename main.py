@@ -25,7 +25,7 @@ class Game:
         # quuestioning, name_guessing, weakness_guessing
         self.game_state = "Questioning"
         self.current_question = 0
-        self.max_questions = 2
+        self.max_questions = 6
         self.battle_outcome = None
 
     def progress_level(self):
@@ -68,7 +68,7 @@ class Game:
             if continue_game:
                 self.game_state = "Questioning"
                 self.current_question = 0
-                return "\nYou enter the next room."
+                return "\nYou enter the next room. A new demon is standing in front of you."
             self.game_state = "won"
             return "\nYou escaped"
         self.game_state = "died"
