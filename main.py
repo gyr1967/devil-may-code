@@ -19,14 +19,19 @@ current_level_id = 1
 do_change_level = True
 level_command_center = None
 user_question = ""
-response = "t"
+response = ""
 final_question = None
 input_active = True
 question_submitted = False
 
-gui_font = pygame.font.Font(None,30)
+image = pygame.image.load("abaddon.png")
+image = pygame.transform.scale(image, (300, 300))
+image_rect = image.get_rect()
+image_rect.center = (400, 110)
 
-input_rect = pygame.Rect(200,200,140,40)
+gui_font = pygame.font.Font(None,20)
+
+input_rect = pygame.Rect(300,400,140,40)
 text_surface = gui_font.render(user_question,True,(255,255,255))
 
 
@@ -42,9 +47,17 @@ def play_sound(path, loop=1):
     mixer.music.load(path) 
     mixer.music.play(loops=loop)
 
+def victory():
+    play_sound("ffvictory.mp3")
+    do_change_level = True
+    current_level_id += 1
+    print("\n-------------------\nLevel Up!\n-------------------\n")
+    question_submitted = False
+
+
 
 buttons = []
-button2 = Button(screen, gui_font, 'Submit',200,40,(100,250),5)
+button2 = Button(screen, gui_font, 'Submit',200,40,(300,450),5)
 button2.command = (lambda: print("Submit question to demon"))
 buttons.append(button2)
 
@@ -61,11 +74,11 @@ while run:
         do_change_level = False
 
     if fight_in_progress and fight_stage == 1:
-        print("What is the demons name:")
+        response = "What is the demons name:"
         fight_stage += 1
 
     if fight_in_progress and fight_stage == 3:
-        print("What is the demons name:")
+        response = "What is the demon weakness:"
         fight_stage += 1
     
     if question_submitted:
@@ -85,19 +98,15 @@ while run:
             response = level_command_center.guess_name(final_question)
             fight_stage += 1
 
-        if fight_in_progress and fight_stage == 3:
-            response = level_command_center.guess_name(final_question)
+        if fight_in_progress and fight_stage == 4:
+            response = level_command_center.guess_weakness(final_question)
             fight_stage += 1
             fight_in_progress = False
 
         if currentQuestions >= maxQuestions and fight_in_progress == False:
             is_victory = level_command_center.fight_outcome()
             if is_victory:
-                play_sound("ffvictory.mp3")
-                do_change_level = True
-                current_level_id += 1
-                print("\n-------------------\nLevel Up!\n-------------------\n")
-                question_submitted = False
+                victory()
                 continue
             else:
                 play_sound("ffvictory.mp3")
@@ -109,7 +118,7 @@ while run:
         b.draw()
     
     demon_text = gui_font.render(response, True, (0, 255, 0), (0, 0, 128))
-    demon_textRect = demon_text.get_rect()
+    demon_textRect = pygame.Rect(200, 350, 140, 40)
     screen.blit(demon_text, demon_textRect)
     
     # game events
@@ -134,6 +143,7 @@ while run:
     
     pygame.display.update()
     screen.blit(background, (0, 0))
+    screen.blit(image, image_rect)
     screen.blit(text_surface,(input_rect.x + 5, input_rect.y +5))
     input_rect.w=max(100,text_surface.get_width() + 10)
 
