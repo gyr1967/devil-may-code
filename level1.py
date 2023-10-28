@@ -23,6 +23,7 @@ class Level1:
         self.current_questions = 1
         print("You encounter a great and terrible beast!:")
         print(f"You have {self.max_questions} questions to find out the name and weakness of this great demon")
+        self.demon_hp = 2
 
     def answer_command(self, command):
         self.current_questions += 1
@@ -32,34 +33,25 @@ class Level1:
         self.chat_history.append(response)
         return response["content"]
     
-    def init_battle(self):
-        self.demon_hp = 2
-    
     def guess_name(self, guessed_name):
             if guessed_name.lower().strip() == self.name:
                 self.demon_hp -= 1
-                print("Demon: ARGHAAGGGGH") if self.demon_hp == 0 else print("Demon: argh!")
                 return "Demon: ARGHAAGGGGH"
             else:
-                print("Hahaha, not even close")
                 return "Hahaha, not even close"
 
     def guess_weakness(self, guessed_weakness):
         if guessed_weakness.lower().strip() == self.weakness:
             self.demon_hp -= 1
-            print("How did you find out!")
             return "How did you find out!"
 
         else:
-            print("Hahaha, not even close")
             return "Hahaha, not even close"
 
     def fight_outcome(self):
         if self.demon_hp <= 0:
-            print("You have defeated the demon")
             return True
         else:
-            print("The demon devoured you. Game Over!")
             return False
 
     def getCurrentQuestions(self):

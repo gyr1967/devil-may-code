@@ -1,149 +1,147 @@
+import tkinter as tk
+from tkinter import ttk
+from PIL import Image, ImageTk
 from level1 import Level1 as L1
 from level2 import Level2 as L2
-from pygame import mixer
-import sys
-import pygame
-from button import Button
+from level3 import Level3 as L3
+from level4 import Level4 as L4
+from level5 import Level5 as L5
 
-pygame.init()
-pygame.display.set_caption("Devil May Code")
-screen = pygame.display.set_mode((800, 600))
-background = pygame.Surface((800, 600))
-background.fill(pygame.Color('#000000'))
+# Create the main application window
+root = tk.Tk()
+root.title("Image, Text Entry, and Text Box")
 
-mixer.init()
-mixer.music.set_volume(10)
+class Game:
+    def __init__(self):
+        self.run = True
+        self.current_level_id = 1
+        self.current_level = L1()
+        # quuestioning, name_guessing, weakness_guessing
+        self.game_state = "Questioning"
+        self.current_question = 0
+        self.max_questions = 2
+        self.battle_outcome = None
 
-run = True
-current_level_id = 1
-do_change_level = True
-level_command_center = None
-user_question = ""
-response = ""
-final_question = None
-input_active = True
-question_submitted = False
-
-image = pygame.image.load("abaddon.png")
-image = pygame.transform.scale(image, (300, 300))
-image_rect = image.get_rect()
-image_rect.center = (400, 110)
-
-gui_font = pygame.font.Font(None,20)
-
-input_rect = pygame.Rect(300,400,140,40)
-text_surface = gui_font.render(user_question,True,(255,255,255))
-
-
-def change_level(level_id):
-    if level_id == 1:
-        return L1()
-    elif level_id == 2:
-        return L2()
-    return None
- 
-def play_sound(path, loop=1):
-    mixer.music.fadeout(1)
-    mixer.music.load(path) 
-    mixer.music.play(loops=loop)
-
-def victory():
-    play_sound("ffvictory.mp3")
-    do_change_level = True
-    current_level_id += 1
-    print("\n-------------------\nLevel Up!\n-------------------\n")
-    question_submitted = False
-
-
-
-buttons = []
-button2 = Button(screen, gui_font, 'Submit',200,40,(300,450),5)
-button2.command = (lambda: print("Submit question to demon"))
-buttons.append(button2)
-
-fight_in_progress = False
-
-while run:
-    # switch to a different level
-    if do_change_level:
-        level_command_center = change_level(current_level_id)
-        if level_command_center is None:
-            print("Error: level not found")
-            break
-        play_sound("battletheme.mp3", loop=10)
-        do_change_level = False
-
-    if fight_in_progress and fight_stage == 1:
-        response = "What is the demons name:"
-        fight_stage += 1
-
-    if fight_in_progress and fight_stage == 3:
-        response = "What is the demon weakness:"
-        fight_stage += 1
+    def progress_level(self):
+        self.current_level_id += 1
+        if self.current_level_id == 1:
+            self.current_level = L1()
+        elif self.current_level_id == 2:
+            self.current_level = L2()
+        elif self.current_level_id == 3:
+            self.current_level = L3()
+        elif self.current_level_id == 4:
+            self.current_level = L4()
+        elif self.current_level_id == 5:
+            self.current_level = L5()
+        else:
+            return False
+        return True
     
-    if question_submitted:
-        currentQuestions = level_command_center.getCurrentQuestions()
-        maxQuestions = level_command_center.getMaxQuestions()
-        response = level_command_center.answer_command(final_question)
-        print(f"Demon: {response}")
-        print(f"You have {maxQuestions-currentQuestions} questions left")
-        print("You: ") if currentQuestions < maxQuestions else print("")
-        if currentQuestions >= maxQuestions and fight_in_progress == False:
-            level_command_center.init_battle()
-            print("You have run out of questions, the time for battle has come!")
-            fight_in_progress = True
-            fight_stage = 1
+    def get_output(self, text):
+        if self.game_state == "Questioning":
+            response = self.current_level.answer_command(text)
+            response += self.increment_question()
+        elif self.game_state == "name_guessing":
+            response = self.current_level.guess_name(text)
+            response += "\n What is the demon weakness:"
+            self.game_state = "weakness_guessing"
+        elif self.game_state == "weakness_guessing":
+            response = self.current_level.guess_weakness(text)
+            self.battle_outcome = self.current_level.fight_outcome()
+            response += f"\n{'You won' if self.battle_outcome else 'You lost'}"
+            response += self.change_level()
+        else:
+            print("ruh roh raggy!")
+            return None
+        return response
+    
+    def change_level(self):
+        if self.battle_outcome:
+            continue_game = self.progress_level()
+            if continue_game:
+                self.game_state = "Questioning"
+                self.current_question = 0
+                return "\nYou enter the next room."
+            self.game_state = "won"
+            return "\nYou escaped"
+        self.game_state = "died"
+        return "\nGame Over"
         
-        if fight_in_progress and fight_stage == 2:
-            response = level_command_center.guess_name(final_question)
-            fight_stage += 1
-
-        if fight_in_progress and fight_stage == 4:
-            response = level_command_center.guess_weakness(final_question)
-            fight_stage += 1
-            fight_in_progress = False
-
-        if currentQuestions >= maxQuestions and fight_in_progress == False:
-            is_victory = level_command_center.fight_outcome()
-            if is_victory:
-                victory()
-                continue
-            else:
-                play_sound("ffvictory.mp3")
-                question_submitted = False
-                break
-        question_submitted = False
     
-    for b in buttons:
-        b.draw()
+    def get_current_level(self):
+        return self.current_level
     
-    demon_text = gui_font.render(response, True, (0, 255, 0), (0, 0, 128))
-    demon_textRect = pygame.Rect(200, 350, 140, 40)
-    screen.blit(demon_text, demon_textRect)
+    def get_current_level_id(self):
+        return self.current_level_id
     
-    # game events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            is_running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            input_active = True
-            user_question = ""
-        elif event.type == pygame.KEYDOWN and input_active:
-            if question_submitted == False and event.key == pygame.K_RETURN:
-                final_question = user_question
-                user_question = ""
-                question_submitted = True
+    def set_current_level_id(self, level_id):
+        self.current_level_id = level_id
+        self.progress_level()
+        
+    def get_run(self):
+        return self.run
+    
+    def set_run(self, run):
+        self.run = run
 
-            elif event.key == pygame.K_BACKSPACE:
-                user_question =  user_question[:-1]
-            else:
-                user_question += event.unicode
-    text_surface = gui_font.render(user_question,True,(255,255,255))
-    input_rect.w=max(100,text_surface.get_width() + 10)
-    
-    pygame.display.update()
-    screen.blit(background, (0, 0))
-    screen.blit(image, image_rect)
-    screen.blit(text_surface,(input_rect.x + 5, input_rect.y +5))
-    input_rect.w=max(100,text_surface.get_width() + 10)
+    def get_game_state(self):
+        return self.game_state
 
+    def increment_question(self):
+        self.current_question += 1
+        if self.current_question >= self.max_questions:
+            self.game_state = "name_guessing"
+            return "\nYou have run out of questions. The battle has begun.\nWhat is the demon's name:"
+        return ""
+        
+    def fight_on (self):
+        self.game_state = "name_guessing"
+        text_box.insert("insert", f"What is the demon's name:")
+        return "\nThe battle has begun.\nWhat is the demon's name:"
+
+game = Game()
+
+# Create a function to update the text box
+def update_text():
+    text = entry.get()
+    entry.delete(0, "end")  # Clear the existing text
+    text_box.delete(1.0, "end")  # Clear the existing text
+    response = game.get_output(text)
+    text_box.insert("insert", f"{response}")
+
+# Load the image
+image = Image.open("abaddon.png")
+image = image.resize((200, 200))
+image = ImageTk.PhotoImage(image)
+
+# Create a label to display the image
+image_label = ttk.Label(root, image=image)
+image_label.pack()
+
+# Create a text entry box
+entry = ttk.Entry(root)
+entry.pack()
+
+# Create a text box
+text_box = tk.Text(root, height=10, width=40)
+text_box.pack()
+
+# Create a submit button
+submit_button = ttk.Button(root, text="Submit", command=update_text)
+submit_button.pack()
+
+#Create a fight button
+fight_button = ttk.Button(root, text="Fight", command=game.fight_on)
+fight_button.pack()
+
+# display the current game state as text
+game_state_text = tk.Text(root, height=10, width=40)
+game_state_text.pack()
+# add the game state to the text
+game_state_text.insert("insert", f"Game State: {game.get_current_level().getCurrentQuestions}")
+game_state_text.insert("insert", f"Game State: {game.get_game_state()}")
+
+
+# Start the tkinter main loop
+root.mainloop()
