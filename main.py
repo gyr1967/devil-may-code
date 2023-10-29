@@ -24,7 +24,7 @@ class Game:
         self.current_level = L1()
         self.game_state = "Questioning"
         self.current_question = 0
-        self.max_questions = 2
+        self.max_questions = 6
         self.battle_outcome = None
 
     def progress_level(self):
