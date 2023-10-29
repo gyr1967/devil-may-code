@@ -50,7 +50,7 @@ class Game:
             response += self.increment_question()
         elif self.game_state == "name_guessing":
             response = self.current_level.guess_name(text)
-            response += "\n What is the demon weakness:"
+            response += "\n What is the demon's weakness:"
             self.game_state = "weakness_guessing"
         elif self.game_state == "weakness_guessing":
             response = self.current_level.guess_weakness(text)
@@ -68,6 +68,7 @@ class Game:
             if continue_game:
                 self.game_state = "Questioning"
                 self.current_question = 0
+                self.progress_image()
                 return "\nYou enter the next room. A new demon is standing in front of you."
             self.game_state = "won"
             return "\nYou escaped"
@@ -103,8 +104,44 @@ class Game:
         
     def fight_on (self):
         self.game_state = "name_guessing"
+        text_box.delete(1.0, "end")  
         text_box.insert("insert", f"What is the demon's name:")
         return "\nThe battle has begun.\nWhat is the demon's name:"
+    
+    def progress_image(self):
+        if self.current_level_id == 1:
+            image = Image.open("abaddon.png")
+            image = image.resize((200, 200))
+            image = ImageTk.PhotoImage(image)
+            image_label.configure(image=image)
+            image_label.image = image
+        elif self.current_level_id == 2:
+            image = Image.open("kirito.png")
+            image = image.resize((200, 200))
+            image = ImageTk.PhotoImage(image)
+            image_label.configure(image=image)
+            image_label.image = image
+        elif self.current_level_id == 3:
+            image = Image.open("kefka.png")
+            image = image.resize((200, 200))
+            image = ImageTk.PhotoImage(image)
+            image_label.configure(image=image)
+            image_label.image = image
+        elif self.current_level_id == 4:
+            image = Image.open("fazbear.png")
+            image = image.resize((200, 200))
+            image = ImageTk.PhotoImage(image)
+            image_label.configure(image=image)
+            image_label.image = image
+        elif self.current_level_id == 5:
+            image = Image.open("trickster.png")
+            image = image.resize((200, 200))
+            image = ImageTk.PhotoImage(image)
+            image_label.configure(image=image)
+            image_label.image = image
+        else:
+            return False
+        return True
 
 game = Game()
 
@@ -132,7 +169,9 @@ entry.pack()
 # Create a text box
 text_box = tk.Text(root, height=10, width=40)
 text_box.pack()
-text_box.insert("insert", f"You enter a spooky demon mansion. You see a demon in front of you.")
+text_box.insert("insert", f"""You enter a spooky demon mansion.
+                You see a demon in front of you. 
+                You must ask it questions to find out its name and weakness.""")
 
 # Create a submit button
 submit_button = ttk.Button(root, text="Submit", command=update_text)

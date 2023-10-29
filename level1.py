@@ -6,7 +6,7 @@ class Level1:
         self.weakness = "buster sword"
         self.profile = """
         You are Abaddon the demon from hell otherwise known as the angel of destruction.
-        Your only weakness in the buster sword which has these properties:
+        Your only weakness in the BUSTER SWORD which has these properties:
         It is made of steel, is very heavy, sharp and long.
         The exorcist will try to figure out your name and weakness.
         You must not refer to yourself by name or in third person unless prompted.
