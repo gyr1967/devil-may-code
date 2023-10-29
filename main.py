@@ -22,10 +22,9 @@ class Game:
         self.run = True
         self.current_level_id = 1
         self.current_level = L1()
-        # quuestioning, name_guessing, weakness_guessing
         self.game_state = "Questioning"
         self.current_question = 0
-        self.max_questions = 6
+        self.max_questions = 2
         self.battle_outcome = None
 
     def progress_level(self):
@@ -97,9 +96,10 @@ class Game:
 
     def increment_question(self):
         self.current_question += 1
+        self.update_question_counter_box()
         if self.current_question >= self.max_questions:
             self.game_state = "name_guessing"
-            return "\nYou have run out of questions. The battle has begun.\nWhat is the demon's name:"
+            return "\n<<You have run out of questions. The battle has begun.>>\nWhat is the demon's name:"
         return ""
         
     def fight_on (self):
@@ -142,6 +142,10 @@ class Game:
         else:
             return False
         return True
+    
+    def update_question_counter_box(self):
+        if self.current_question+1 >= self.max_questions:
+            question_counter.configure(text=f"Question {self.current_question+1} of {self.max_questions}")
 
 game = Game()
 
@@ -169,9 +173,11 @@ entry.pack()
 # Create a text box
 text_box = tk.Text(root, height=10, width=40)
 text_box.pack()
-text_box.insert("insert", f"""You enter a spooky demon mansion.
-                You see a demon in front of you. 
-                You must ask it questions to find out its name and weakness.""")
+text_box.insert("insert", f"""You enter a spooky demon mansion. You see a demon in front of you. You must ask it questions to find out its name and weakness.""")
+
+#  create a counter that keeps track of the number of questions asked
+question_counter = ttk.Label(root, text=f"Question {game.current_question+1} of {game.max_questions}")
+question_counter.pack()
 
 # Create a submit button
 submit_button = ttk.Button(root, text="Submit", command=update_text)
