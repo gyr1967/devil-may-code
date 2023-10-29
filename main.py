@@ -149,11 +149,10 @@ class Game:
 
 game = Game()
 
-# Create a function to update the text box
 def update_text():
     text = entry.get()
-    entry.delete(0, "end")  # Clear the existing text
-    text_box.delete(1.0, "end")  # Clear the existing text
+    entry.delete(0, "end") 
+    text_box.delete(1.0, "end") 
     response = game.get_output(text)
     text_box.insert("insert", f"{response}")
 
